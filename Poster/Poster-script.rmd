@@ -15,6 +15,8 @@ library(tidyverse)
 
 ```{r import_data}
 df = read.csv("Online_Retail_Raw.csv")
+
+colnames(df);
 ```
 
 ```{r}
@@ -23,4 +25,9 @@ by_country = split(df, f = df$Country)
 by_customer = split(df, f = df$CustomerID)
 
 by_invoice = split(df, f = df$InvoiceNo)
+```
+
+```{r}
+ggplot(df, aes(x=InvoiceDate, y=UnitPrice*Quantity)) +
+  geom_bar()
 ```

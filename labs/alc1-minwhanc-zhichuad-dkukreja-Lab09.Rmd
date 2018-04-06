@@ -34,10 +34,10 @@ output:
 
 ***What you have to turn in**:  Write at least one sentence about each group member that's in attendance today.  This could be their hometown, their major(s)/minor(s), their favorite foods/restaurants, their favorite movies/TV shows, or anything else that's appropriate.*
 
-Anthony is from Dallas, Texas. He's a CS Major and Stats Double.
-Zhichuan is from Beijing, China. He's a Stats-ML major with a double in Robotics.
-Minwhan is from Korea. He's an Econ-Stat major.
-Devansh (me) is from Seattle. He's an IS Major with a CS double.
+Anthony is from Dallas, Texas. He's a CS Major and Stats Double. He loves ice cream and Pacific Rim.
+Minwhan is from Korea. He's an Econ-Stat major. He likes sushi, Harry Potter, and Friends.
+Zhichuan is from Beijing, China. He's a Stats-ML major with a double in Robotics. He's lactose intolerant but he loves ice cream. He loves Shutter Island and Matrix.
+Devansh (me) is from Seattle. He's an IS Major with a CS double. He loves sushi, Daredevil, and the Punisher.
 
 ***
 ***
