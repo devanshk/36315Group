@@ -99,15 +99,19 @@ https://archive.ics.uci.edu/ml/datasets/Online+Retail#
 *Look up the help documentation for the following functions:  `pdf()`, `png()`, and `ggsave()`.*
 
 *(a)  What other functions are listed in the help file for `png()`?*
++ bmp(), jpeg(), png(), tiff()
 
 *(b)  How do you control the height and width of images with the `pdf()` function?  What are the units for these parameters?*
++ There is a width and height parameter in the pdf() function. The width and height of the graphics region in inches, the default value is 7.
 
 *(c)  How do you control the height and width of images with the `png()` function?  What are the **default** units for these parameters?*
++ There is a width and height parameter that contrls the width and height of the device. The default unit is px(pixel).
 
 *(d)  What types of images can you save with the `ggsave()` function?  (Hint:  Look at the `device` parameter.)*
++ "eps","ps","tex","pdf","jpeg","tiff","png","bmp","svg","wmf"
 
 *(e)  What does the `dpi` parameter control in the `ggsave()` function?  What does `dpi` stand for?*
-
++ dpi controls the plot resolution, it stands for dots per inch
 
 ***Note**: these functions will be very useful for you as you prepare your posters, especially `pdf()` and `ggsave()`.  Note that these functions are called when you click "Export" in the Plot window in RStudio.*
 
