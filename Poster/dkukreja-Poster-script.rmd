@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r dependencies}
 library(tidyverse)
 library(forcats)
+library(lubridate)
 ```
 
 ```{r import_data}
@@ -20,12 +21,34 @@ df = read.csv("Online_Retail_Raw.csv")
 colnames(df);
 ```
 
+```{r remove_non_european}
+#ONLY RUN IF YOU ONLY WANT EUROPEAN COUNTRIES
+non_european <- c("Australia", "Bahrain", "Brazil", "Canada", "Hong Kong",
+                  "Japan", "RSA", "Saudi Arabia", "Singapore", "United Arab Emirates",
+                  "Unspecified", "USA")
+
+df <- df[!(df$Country %in% non_european),]
+
+df$Country <- factor(df$Country)
+
+table(df$Country)
+```
+```{r remove_bulk_and_returns}
+#RUN IF YOU WANT TO REMOVE BULK ORDERS AND RETURNS
+df <- df[df$Quantity <= 50 & df$Quantity >= 0,]
+df <- df[df$UnitPrice > 0, ]
+```
+
 ```{r}
 df2 = mutate(df,
              DayOfWeek = factor(
                             weekdays(as.Date(InvoiceDate, "%m/%d/%Y")),
-                            levels=c('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')))
-
+                            levels=c('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')),
+             Month = factor(
+                            months(as.Date(InvoiceDate, "%m/%d/%Y")),
+                            levels=c('January','February','March','April','May','June','July','August','September','October','November','December')),
+             Year = factor(year(as.Date(InvoiceDate, "%m/%d/%Y"))))
+df2
 
 ggplot(df2) +
   stat_summary(aes(x=DayOfWeek, y=UnitPrice*Quantity),
@@ -36,15 +59,24 @@ ggplot(df2) +
        y="Money Spent in $")
 
 ggplot(df2) +
-  stat_summary(aes(x=DayOfWeek, y=Quantity),
+  stat_summary(aes(x=Month, y=UnitPrice*Quantity),
              fun.y = sum,
              geom="bar") +
-  labs(title="Item Purchases in Online Retail by Weekday",
-       x="Weekday",
-       y="Quantity Purchased")
+  labs(title="Item Purchases in Online Retail by Month",
+       x="Month",
+       y="Money Spent in $") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-
+```{r}
+ggplot(df2) +
+  stat_summary(aes(x=InvoiceDate, y=UnitPrice*Quantity),
+             fun.y = sum,
+             geom="bar") +
+  labs(title="Item Purchases in Online Retail Over Time",
+       x="Day",
+       y="Money Spent in $")
+```
 
 
 

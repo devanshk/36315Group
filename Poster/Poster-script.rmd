@@ -34,9 +34,9 @@ table(df$Country)
 ```
 
 ```{r remove_bulk}
-#RUN IF YOU WANT TO REMOVE BULK ORDERS
+#RUN IF YOU WANT TO REMOVE BULK ORDERS AND RETURNS
 df <- df[df$Quantity <= 50 & df$Quantity >= 0,]
-
+df <- df[df$UnitPrice > 0, ]
 ```
 
 ```{r}
