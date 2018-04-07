@@ -11,23 +11,130 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r dependencies}
 library(tidyverse)
+library(rworldmap)
+library(RColorBrewer)
 ```
 
 ```{r import_data}
 df = read.csv("Online_Retail_Raw.csv")
+df$total_price <- df$UnitPrice * df$Quantity
+```
 
-colnames(df);
+```{r remove_non_european}
+#ONLY RUN IF YOU ONLY WANT EUROPEAN COUNTRIES
+non_european <- c("Australia", "Bahrain", "Brazil", "Canada", "Hong Kong",
+                  "Japan", "RSA", "Saudi Arabia", "Singapore", "United Arab Emirates",
+                  "Unspecified", "USA")
+
+df <- df[!(df$Country %in% non_european),]
+
+df$Country <- factor(df$Country)
+
+table(df$Country)
+```
+
+```{r remove_bulk}
+#RUN IF YOU WANT TO REMOVE BULK ORDERS
+df <- df[df$Quantity <= 50 & df$Quantity >= 0,]
+
 ```
 
 ```{r}
 by_country = split(df, f = df$Country)
 
-by_customer = split(df, f = df$CustomerID)
+#by_customer = split(df, f = df$CustomerID)
 
-by_invoice = split(df, f = df$InvoiceNo)
+#by_invoice = split(df, f = df$InvoiceNo)
+
+#by_item = split(df, f = df$StockCode)
 ```
 
+
 ```{r}
-ggplot(df, aes(x=InvoiceDate, y=UnitPrice*Quantity)) +
-  geom_
+table(df$Country)
+
+countries <- names(table(df$Country))
+```
+
+```{r Q1}
+
+#Generate the data
+country_unit_price <- by_country %>%
+  lapply(FUN = function(x) median(x$UnitPrice)) %>%
+  stack() %>%
+  rename(UnitPrice = values, Country = ind)
+  
+#Bind the data
+unit_map <- joinCountryData2Map(country_unit_price, joinCode = "NAME",
+                                nameJoinColumn = "Country")
+
+mapParams <- mapCountryData(unit_map,
+                            nameColumnToPlot = "UnitPrice",
+                            xlim = c(-20,30),
+                            ylim = c(30,70),
+                            catMethod = "pretty",
+                            mapTitle = "Median Unit Price Per Country",
+                            missingCountryCol = "grey",
+                            colourPalette = brewer.pal(9, "BuGn"),
+                            addLegend = FALSE)
+
+#customize the legend
+do.call( addMapLegend, c(mapParams,
+                         legendLabels = "all",
+                         horizontal = TRUE))
+
+```
+
+```{r Quantity}
+country_quantity <- by_country %>%
+  lapply(FUN = function(x) median(x$Quantity)) %>%
+  stack() %>%
+  rename(Quantity = values, Country = ind)
+
+table(by_country$Netherlands$Quantity)
+
+#Bind the data
+quant_map <- joinCountryData2Map(country_quantity, joinCode = "NAME",
+                                nameJoinColumn = "Country")
+
+mapParams <- mapCountryData(quant_map,
+                            xlim = c(-20,30),
+                            ylim = c(30,70),
+                            nameColumnToPlot = "Quantity",
+                            catMethod = "pretty",
+                            mapTitle = "Median Quantity Per Country",
+                            missingCountryCol = "grey",
+                            colourPalette = brewer.pal(9, "BuGn"),
+                            addLegend = FALSE)
+
+#customize the legend
+do.call( addMapLegend, c(mapParams,
+                         legendLabels = "all",
+                         horizontal = TRUE))
+```
+
+```{r total_price}
+country_total <- by_country %>%
+  lapply(FUN = function(x) sum(x$total_price)/length(unique(x$CustomerID))) %>%
+  stack() %>%
+  rename(total_spent = values, Country = ind)
+
+#Bind the data
+total_map <- joinCountryData2Map(country_total, joinCode = "NAME",
+                                nameJoinColumn = "Country")
+
+mapParams <- mapCountryData(total_map,
+                            xlim = c(-20,30),
+                            ylim = c(30,70),
+                            nameColumnToPlot = "total_spent",
+                            catMethod = "pretty",
+                            mapTitle = "Customer Total Spent Per Country",
+                            missingCountryCol = "grey",
+                            colourPalette = brewer.pal(9, "BuGn"),
+                            addLegend = FALSE)
+
+#customize the legend
+do.call( addMapLegend, c(mapParams,
+                         legendLabels = "all",
+                         horizontal = TRUE))
 ```

@@ -32,7 +32,7 @@ output:
 
 ***Assignment**:  Get to know your group members.*
 
-***What you have to turn in**:  Write at least one sentence about each group member that's in attendance today.  This could be their hometown, their major(s)/minor(s), their favorite foods/restaurants, their favorite movies/TV shows, or anything else that's appropriate.*
+***What you have to turn in**:  Write at least one sentence about each group member that's in attendance today.  This could be their hometown, their major(s)/minor(s), their favorite foods/restaurants, their favorite movies/TV shows, or anything else that's appropriate.
 
 Anthony is from Dallas, Texas. He's a CS Major and Stats Double. He loves ice cream and Pacific Rim.
 Minwhan is from Korea. He's an Econ-Stat major. He likes sushi, Harry Potter, and Friends.
@@ -69,8 +69,10 @@ Devansh (me) is from Seattle. He's an IS Major with a CS double. He loves sushi,
 
 **What you have to turn in**:  
 
-+  A link to the dataset
-+  A brief (no more than two paragraphs) description of the dataset, including number of rows, number of columns, explaining what each observation corresponds to, giving an overview of the columns/variables, etc.
+
+https://archive.ics.uci.edu/ml/datasets/Online+Retail#
+541,909 rows and 8 columns.  Each observation corresponds to a particular item on a purchase. The invoice number is the purchase ID, the stock code is the item number, the description is a basic overview of the product, the quantity is the number of the itmes purchased, the invoice date is the date of the purchase, the unit price is the price of the item, the customerId is the unique identifier of each customer, and the country is the identifier for each country.
+
 
 ***
 ***
@@ -85,6 +87,10 @@ Devansh (me) is from Seattle. He's an IS Major with a CS double. He loves sushi,
 
 ***What you have to turn in**:  At least three ideas of questions you can anwer with your dataset, and how you might answer them graphically.  This may include specific ideas about the types of graphs you'll create, or simply sentences like "What is the relationship between the age of shark attack victims and the year in which the shark attack occured?  Does this change depending on the gender of the victim?"*
 
+1. How does the purchasing behavior of people relate to country? Which countries buy more expensive items and which countries buy more items?
+2. How does the frequency of purchases relate to countries, which countries uses most frequeuntly make purchases
+3. How does the per-day-spending of a country relate to real world events.
+
 
 
 ***
@@ -98,15 +104,19 @@ Devansh (me) is from Seattle. He's an IS Major with a CS double. He loves sushi,
 *Look up the help documentation for the following functions:  `pdf()`, `png()`, and `ggsave()`.*
 
 *(a)  What other functions are listed in the help file for `png()`?*
++ bmp(), jpeg(), png(), tiff()
 
 *(b)  How do you control the height and width of images with the `pdf()` function?  What are the units for these parameters?*
++ There is a width and height parameter in the pdf() function. The width and height of the graphics region in inches, the default value is 7.
 
 *(c)  How do you control the height and width of images with the `png()` function?  What are the **default** units for these parameters?*
++ There is a width and height parameter that contrls the width and height of the device. The default unit is px(pixel).
 
 *(d)  What types of images can you save with the `ggsave()` function?  (Hint:  Look at the `device` parameter.)*
++ "eps","ps","tex","pdf","jpeg","tiff","png","bmp","svg","wmf"
 
 *(e)  What does the `dpi` parameter control in the `ggsave()` function?  What does `dpi` stand for?*
-
++ dpi controls the plot resolution, it stands for dots per inch
 
 ***Note**: these functions will be very useful for you as you prepare your posters, especially `pdf()` and `ggsave()`.  Note that these functions are called when you click "Export" in the Plot window in RStudio.*
 
