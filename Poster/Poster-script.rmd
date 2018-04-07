@@ -29,5 +29,5 @@ by_invoice = split(df, f = df$InvoiceNo)
 
 ```{r}
 ggplot(df, aes(x=InvoiceDate, y=UnitPrice*Quantity)) +
-  geom_bar()
+  geom_
 ```

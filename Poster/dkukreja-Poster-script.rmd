@@ -1,0 +1,53 @@
+---
+title: "Poster-Script"
+author: "Devansh Kukreja"
+date: "April 4, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r dependencies}
+library(tidyverse)
+library(forcats)
+```
+
+```{r import_data}
+df = read.csv("Online_Retail_Raw.csv")
+
+colnames(df);
+```
+
+```{r}
+df2 = mutate(df,
+             DayOfWeek = factor(
+                            weekdays(as.Date(InvoiceDate, "%m/%d/%Y")),
+                            levels=c('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')))
+
+
+ggplot(df2) +
+  stat_summary(aes(x=DayOfWeek, y=UnitPrice*Quantity),
+             fun.y = sum,
+             geom="bar") +
+  labs(title="Item Purchases in Online Retail by Weekday",
+       x="Weekday",
+       y="Money Spent in $")
+
+ggplot(df2) +
+  stat_summary(aes(x=DayOfWeek, y=Quantity),
+             fun.y = sum,
+             geom="bar") +
+  labs(title="Item Purchases in Online Retail by Weekday",
+       x="Weekday",
+       y="Quantity Purchased")
+```
+
+
+
+
+
+
+
+
