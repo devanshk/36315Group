@@ -70,7 +70,7 @@ ggplot(df2) +
 
 ```{r}
 ggplot(df2) +
-  stat_summary(aes(x=InvoiceDate, y=UnitPrice*Quantity),
+  stat_summary(aes(x=Month, y=UnitPrice*Quantity),
              fun.y = sum,
              geom="bar") +
   labs(title="Item Purchases in Online Retail Over Time",
