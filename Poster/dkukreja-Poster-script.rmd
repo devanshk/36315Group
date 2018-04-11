@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(forcats)
 library(lubridate)
+library(svglite)
 ```
 
 ```{r import_data}
@@ -40,6 +41,32 @@ df <- df[df$UnitPrice > 0, ]
 ```
 
 ```{r}
+df$day <- factor(weekdays(as.Date(df$InvoiceDate, "%m/%d/%Y")),
+                levels=c('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'))
+
+df = df[df$UnitPrice >= 0 & df$UnitPrice <= 10,]
+
+df$price_bin <- cut(df$UnitPrice, breaks = c(0,2,6,Inf), labels = c("Low","Middle","High"))
+
+df$total_price <- df$Quantity * df$UnitPrice
+
+df.agg <- aggregate(df$total_price, by=list(df$day, df$price_bin), sum) %>%
+  rename(Weekday = Group.1, price_bin = Group.2, total_spen = x)
+```
+
+```{r}
+df.agg
+
+ggplot(df.agg, aes(x=Weekday, y=total_spen, fill=price_bin)) +
+  geom_bar(stat="identity") +
+  labs(title="Customers Spend More on Weekdays",
+       x="Weekday",
+       y="Money Spent in £",
+       fill="Item Price")
+```
+
+
+```{r}
 df2 = mutate(df,
              DayOfWeek = factor(
                             weekdays(as.Date(InvoiceDate, "%m/%d/%Y")),
@@ -47,8 +74,17 @@ df2 = mutate(df,
              Month = factor(
                             months(as.Date(InvoiceDate, "%m/%d/%Y")),
                             levels=c('January','February','March','April','May','June','July','August','September','October','November','December')),
-             Year = factor(year(as.Date(InvoiceDate, "%m/%d/%Y"))))
+             Year = factor(year(as.Date(InvoiceDate, "%m/%d/%Y"))),
+             JustDay = factor(as.Date(InvoiceDate, "%m/%d/%Y")))
 df2
+
+dailyMoney <- aggregate(x=df2["UnitPrice"]*df2["Quantity"],
+          by=df2["JustDay"],
+          FUN = sum)
+
+dfGrouped <- group_by(df2, DayOfWeek, Month)
+
+
 
 ggplot(df2) +
   stat_summary(aes(x=DayOfWeek, y=UnitPrice*Quantity),
@@ -56,7 +92,7 @@ ggplot(df2) +
              geom="bar") +
   labs(title="Item Purchases in Online Retail by Weekday",
        x="Weekday",
-       y="Money Spent in $")
+       y="Money Spent in £")
 
 ggplot(df2) +
   stat_summary(aes(x=Month, y=UnitPrice*Quantity),
@@ -64,22 +100,71 @@ ggplot(df2) +
              geom="bar") +
   labs(title="Item Purchases in Online Retail by Month",
        x="Month",
-       y="Money Spent in $") +
+       y="Money Spent in £") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(dfGrouped) +
+  stat_summary(aes(x=DayOfWeek, y=UnitPrice*Quantity),
+             fun.y = sum,
+             geom="bar") +
+  labs(title="Item Purchases in Online Retail by Month",
+       x="Month",
+       y="Money Spent in £") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+
 ```{r}
-ggplot(df2) +
-  stat_summary(aes(x=Month, y=UnitPrice*Quantity),
-             fun.y = sum,
-             geom="bar") +
-  labs(title="Item Purchases in Online Retail Over Time",
-       x="Day",
-       y="Money Spent in $")
+justUK <- df2[df$Country == "United Kingdom", ]
+
+dailyMoney <- aggregate(x=df2["UnitPrice"]*df2["Quantity"],
+          by=df2["JustDay"],
+          FUN = sum)
+
+dailyMoney <- mutate(dailyMoney,
+       Month = as.factor(month(as.Date(JustDay, "%Y-%m-%d"))))
+
+dailyMoney["Month"] <- fct_recode(dailyMoney$Month,
+                         "January"="1",
+                         "February"="2",
+                         "March"="3",
+                         "April"="4",
+                         "May"="5",
+                         "June"="6",
+                         "July"="7",
+                         "August"="8",
+                         "September"="9",
+                         "October"="10",
+                         "November"="11",
+                         "December"="12")
+
+orderdDM <- dailyMoney[order(dailyMoney$JustDay),]
+
+ggplot(orderdDM, aes(x=as.Date(JustDay, "%Y-%m-%d"), y=UnitPrice)) +
+  geom_vline(xintercept = as.Date("12/01/2010", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("01/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("02/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("03/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("04/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("05/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("06/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("07/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("08/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("09/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("10/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("11/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_vline(xintercept = as.Date("12/01/2011", "%m/%d/%Y"), alpha=0.5, size=0.4) +
+  geom_line() +
+  geom_smooth(method="lm", color="blue", se=F) +
+  geom_smooth(method="loess", color="green") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%m/%Y") + 
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(title="Increasing Online Retailer Sales",
+       x="Date",
+       y="Money Spent in £") +
+  theme(text = element_text(size=10),
+        axis.text.x = element_text(angle=45, hjust=1))
 ```
-
-
-
 
 
 
